@@ -20,6 +20,7 @@ def julian_day(dt_input=default_dt):
     D = add_day_frac(dt_input)
     
     # assume that the transition to the gegorian calendar happend in Oct 1582
+    # really it happened at different times depending on the country, e.g. in 1752 in the UK
     if Y < 1582:
         gegorian = False
     elif Y > 1582:
