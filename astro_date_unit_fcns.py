@@ -6,20 +6,18 @@ import datetime
 import pytz
 
 # some defaults
-default_Y = 1957
-default_M = 10
-default_D = 4.81
-default_JD = 2436116.31
-default_t = datetime.datetime.strptime('00:00:00', '%H:%M:%S')
+default_dt = datetime.datetime(1957, 10, 4, 19, 21)
+default_JD = 2436116.30625
 sf_lat = 38.3047
 sf_longitude = 122.2989
 
-
-def julian_day(Y=default_Y, M=default_M, D=default_D, t=default_t):
+def julian_day(dt_input=default_dt):
     # Calculations taking from Chapter 7 of Astronomy Algorithms
 
+    # Breakout the datetime object
+    Y, M, D = datebreakout(dt_input)
     # add the time part of the date to the day integer
-    D = add_day_frac(D,t)
+    D = add_day_frac(dt_input)
     
     # assume that the transition to the gegorian calendar happend in Oct 1582
     if Y < 1582:
@@ -83,14 +81,16 @@ def calendar_date(JD=default_JD):
         year = C - 4715
     return [year, month, day]
 
-def sidereal_time_greenwich(Y=default_Y, M=default_M, D=default_D, t=default_t):
+def sidereal_time_greenwich(dt_input=default_dt):
     # Cacls from Chapter 12 Astronomy Alogrithms
 
-    # add the fractional day from the time object to D
-    D = add_day_frac(D,t)
-    # Find the Julian Day at 0h UT
-    JD_0 = julian_day(Y, M, int(D))
-    JD = julian_day(Y, M, D)
+    # Breakout the datetime object
+    Y, M, D = datebreakout(dt_input)
+    day_only = datetime.datetime(Y, M, D)
+    
+    # Find the Julian Day at 0h UT and the normal Julian Day
+    JD_0 = julian_day(day_only)
+    JD = julian_day(dt_input)
     # calc the mean sidereal time
     T = (JD_0 - 2451545.0) / 36525
     mean_sid_gt = 280.46061837 + 360.98564736629 * (JD - 2451545.0) + 0.000387933*(T**2) - ((T**3) / 38710000)
@@ -103,6 +103,11 @@ def sidereal_time_local(sid_gt, lat=sf_lat, longitude=sf_longitude):
     lst = lst % 360
     return lst
 
+def datebreakout(dt_input):
+    Y = dt_input.year
+    M = dt_input.month
+    D = dt_input.day
+    return Y, M, D
 
 def decdeg2time(decdeg):
     # Convert decimal degrees into time
@@ -119,24 +124,22 @@ def decdeg2dms(decdeg):
     # Convert decimal degrees into degrees minutes seconds
     mnt,sec = divmod(decdeg*3600,60)
     deg,mnt = divmod(mnt,60)
-    return deg,mnt,sec
+    return deg, mnt, sec
 
-def add_day_frac(D, t):
+def add_day_frac(dt_input):
     # Take an int, assumed to be a day, and add a time to it as a day frac
     # (has to be a better way to do this)
-    zero_time = datetime.datetime.strptime('00:00:00', '%H:%M:%S')
-    tdelta = t - zero_time
+    Y, M, D = datebreakout(dt_input)
+    day_only = datetime.datetime(Y, M, D)
+    tdelta = dt_input - day_only
     day_frac = tdelta.total_seconds() / (24 * 3600)
     return D + day_frac
 
 def showoff():
     # Run some calcs on 7 Oct 1985 7:21PM and print them to the screen
-    year = 1985
-    month = 10
-    day = 7
-    t = datetime.datetime(1900,1,1, 19, 21)
-    JD = julian_day(year, month, day, t)
-    sid_gt = sidereal_time_greenwich(year, month, day, t)
+    dt_ex = datetime.datetime(1987,10,7, 19, 21)
+    JD = julian_day(dt_ex)
+    sid_gt = sidereal_time_greenwich(dt_ex)
     sid_local = sidereal_time_local(sid_gt)
     print 'The Julian Day of 1985 October 7 at 19:21 UTC is: %s' % JD
     print 'You can verify at this URL: http://www.onlineconversion.com/julian_date.htm'
@@ -146,12 +149,8 @@ def showoff():
     print 'You can verify here: http://www.csgnetwork.com/siderealjuliantimecalc.html'
     print ''
     # show current local sidereal time
-    n = datetime.datetime.utcnow()
-    y = n.year
-    m = n.month
-    d = n.day
-    t = datetime.datetime.combine(datetime.date(1900,1,1), n.time())
-    current_sid_local = sidereal_time_local( sidereal_time_greenwich(y, m, d, t))
+    utcnow = datetime.datetime.utcnow()
+    current_sid_local = sidereal_time_local( sidereal_time_greenwich(utcnow))
     print 'Local Sidereal Time in SF right now is: %s' % decdeg2time(current_sid_local).time().isoformat()
     print 'Can verify here: http://tycho.usno.navy.mil/sidereal.html'
 
