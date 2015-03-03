@@ -79,7 +79,8 @@ def calendar_date(JD=default_JD):
         year = C - 4716
     else:
         year = C - 4715
-    return [year, month, day]
+    output_dt = datetime.datetime(year, month, day)
+    return output_dt
 
 def sidereal_time_greenwich(dt_input=default_dt):
     # Cacls from Chapter 12 Astronomy Alogrithms
