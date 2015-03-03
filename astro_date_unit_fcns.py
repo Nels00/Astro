@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Takes a date and converts it to the Julian Day
+# Several functions that allow for the calculation of Julian Day and Sidereal Time
 # Assumes that longitude West is positive
 import datetime
 import pytz
