@@ -41,7 +41,7 @@ def julian_day(dt_input=default_dt):
         Y = Y - 1
         M = M + 12
     # Calc A & B depending on the calendar
-    if gegorian == True:
+    if gegorian:
         A = int(Y/100)
         B = 2 - A + int(A/4)
     else:
@@ -86,7 +86,7 @@ def calendar_date(JD=default_JD):
     return datetime.datetime.combine(day_dt.date(), time_dt.time())
 
 def sidereal_time_greenwich(dt_input=default_dt):
-    # Cacls from Chapter 12 Astronomy Alogrithms
+    # Calcs from Chapter 12 Astronomy Alogrithms
 
     # Breakout the datetime object
     Y, M, D = datebreakout(dt_input)
@@ -149,7 +149,6 @@ def dayfrac2time(day_frac):
     # they come out as floats so i need to convert them to type integer
     t = datetime.datetime(1900,1,1, int(hrs), int(mnt), int(sec))
     return t
-
 
 def add_day_frac(dt_input):
     # Take an int, assumed to be a day, and add a time to it as a day frac
