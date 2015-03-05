@@ -1,2 +1,6 @@
-# put dependencies here
+# Put dependencies here
+#
+# To install all dependecnies run `pip install -r requirements.txt`
 
+# example:
+# pytz
