@@ -12,7 +12,8 @@ sf_lat = 38.3047
 sf_longitude = 122.2989
 
 def julian_day(dt_input=default_dt):
-    # Calculations taking from Chapter 7 of Astronomy Algorithms
+    # Takes a datetime object and returns the Julian Day
+    # Calculations taken from Chapter 7 of Astronomy Algorithms
 
     # Breakout the datetime object
     Y, M, D = datebreakout(dt_input)
@@ -21,20 +22,14 @@ def julian_day(dt_input=default_dt):
     
     # assume that the transition to the gegorian calendar happend in Oct 1582
     # really it happened at different times depending on the country, e.g. in 1752 in the UK
-    if Y < 1582:
+    dt_julian = datetime.datetime(1582, 10, 4)
+    dt_gegorian = datetime.datetime(1582, 10, 15)
+    if dt_input <= dt_julian:
         gegorian = False
-    elif Y > 1582:
-        gegorian = True
-    elif M < 10:
-        gegorian = False
-    elif M > 10:
-        gegorian = True
-    elif int(D) <= 4:
-        gegorian = False
-    elif int(D) >= 15:
+    elif dt_input >= dt_gegorian:
         gegorian = True
     else:
-        print "Error: Technically this date should not exist"
+        print "Error: Technically this date, %s, should not exist" % dt_input.date().isoformat()
         gegorian = True
     # revise M & Y if we're in Jan or Feb
     if M == 1 or M == 2:
@@ -51,6 +46,7 @@ def julian_day(dt_input=default_dt):
     return JD
 
 def calendar_date(JD=default_JD):
+    # Takes a Julian Day and returns a datetime object
     # Calcs were taken from Chapter 7 of Astronomy Algorithms
     
     # these calcs do not work for negative julian days
@@ -80,12 +76,14 @@ def calendar_date(JD=default_JD):
         year = C - 4716
     else:
         year = C - 4715
-    day_dt = datetime.datetime(year, month, int(day))
-    time_dt = dayfrac2time(day)
-
-    return datetime.datetime.combine(day_dt.date(), time_dt.time())
+    # create the datetime object from the Year, Month integers and a fractional Day
+    dt_day = datetime.datetime(year, month, int(day))
+    dt_time = dayfrac2time(day)
+    dt_output = datetime.datetime.combine(dt_day.date(), dt_time.time())
+    return dt_output
 
 def sidereal_time_greenwich(dt_input=default_dt):
+    # Input a datetime object and the sidereal time is returned
     # Calcs from Chapter 12 Astronomy Alogrithms
 
     # Breakout the datetime object
@@ -102,16 +100,24 @@ def sidereal_time_greenwich(dt_input=default_dt):
     return mean_sid_gt
 
 def sidereal_time_local(sid_gt, lat=sf_lat, longitude=sf_longitude):
-    # Take sidereal time at Greenwich and convert into Local Sidereal Time (LST)
+    # Takes a sidereal time at Greenwich, expressed in degrees, and returns the Local Sidereal Time (LST) for that Lat & Long
+    # I think that subtracting the longitude is too simple but it's a close approximation, i think
     lst = sid_gt - longitude
     lst = lst % 360
     return lst
 
 def datebreakout(dt_input):
+    # Give a datetime object and return the Year, Month & Day
     Y = dt_input.year
     M = dt_input.month
     D = dt_input.day
     return Y, M, D
+
+def decdeg2dms(decdeg):
+    # Convert decimal degrees into degrees minutes seconds
+    mnt,sec = divmod(decdeg*3600,60)
+    deg,mnt = divmod(mnt,60)
+    return deg, mnt, sec
 
 def decdeg2time(decdeg):
     # Convert decimal degrees into time
@@ -129,12 +135,6 @@ def decdeg2time(decdeg):
     # for now i have to round seconds until i figure out a better way
     t = datetime.datetime(1900,1,1, hrs, mnt, int(sec))
     return t
-
-def decdeg2dms(decdeg):
-    # Convert decimal degrees into degrees minutes seconds
-    mnt,sec = divmod(decdeg*3600,60)
-    deg,mnt = divmod(mnt,60)
-    return deg, mnt, sec
 
 def dayfrac2time(day_frac):
     # Convert a fractional day into a time
