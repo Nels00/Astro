@@ -13,6 +13,7 @@ class TestAstroDateUnitFcns(unittest.TestCase):
         self.assertEquals(10, actual_date.month)
         self.assertEquals(4, actual_date.day)
         self.assertEquals(19, actual_date.hour)
+        self.assertEquals(21, actual_date.minute)
 
 if __name__ == '__main__':
     unittest.main()

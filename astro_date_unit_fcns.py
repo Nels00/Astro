@@ -78,8 +78,7 @@ def calendar_date(JD=default_JD):
         year = C - 4715
     # create the datetime object from the Year, Month integers and a fractional Day
     dt_day = datetime.datetime(year, month, int(day))
-    dt_time = dayfrac2time(day)
-    dt_output = datetime.datetime.combine(dt_day.date(), dt_time.time())
+    dt_output = dayfrac2time(dt_day.date(), day)
     return dt_output
 
 def sidereal_time_greenwich(dt_input=default_dt):
@@ -127,28 +126,28 @@ def decdeg2time(decdeg):
     mnt = int(conv_mnt)
     sec = (conv_mnt - mnt) * 60
     sec = round(sec)
-    # should change this using date + timedelta(days=1)
-    # for now it's a hack
-    if sec > 59:
-        sec = 59
     # they come out as floats so i need to convert them to type integer
     # for now i have to round seconds until i figure out a better way
     t = datetime.datetime(1900,1,1, hrs, mnt, int(sec))
     return t
 
-def dayfrac2time(day_frac):
-    # Convert a fractional day into a time
+def dayfrac2time(dt_input, day_frac):
+    # Take a datetime.date and fractional day & the fractional day to the datetime object
     frac = day_frac - int(day_frac)
     mnt,sec = divmod(frac*24*3600, 60)
     hrs,mnt = divmod(mnt,60)
     sec = round(sec)
-    # should change this using date + timedelta(days=1)
-    # for now it's a hack
-    if sec > 59:
-        sec = 59
+    # sometimes the seconds will round to 60, so we need to increment by a minute
+    inc_mnt = False
+    if sec == 60:
+        sec = 0
+        inc_mnt = True
     # they come out as floats so i need to convert them to type integer
-    t = datetime.datetime(1900,1,1, int(hrs), int(mnt), int(sec))
-    return t
+    t = datetime.time(int(hrs), int(mnt), int(sec))
+    dt_output = datetime.datetime.combine(dt_input, t)
+    if inc_mnt:
+        dt_output = dt_output + datetime.timedelta(minutes=1)
+    return dt_output
 
 def add_day_frac(dt_input):
     # Take an int, assumed to be a day, and add a time to it as a day frac
