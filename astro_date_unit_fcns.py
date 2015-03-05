@@ -3,7 +3,6 @@
 # Several functions that allow for the calculation of Julian Day and Sidereal Time
 # Assumes that longitude West is positive
 import datetime
-import pytz
 
 # some defaults
 default_dt = datetime.datetime(1957, 10, 4, 19, 21)
