@@ -56,7 +56,7 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     # fractional day part of set_frac
     set_frac = set_frac % 1
     if set_frac < 0:
-        print "error: i think the set_frac time is going to happen the day before.."
+        print "error: i think the set time is going to happen the day before.."
         set_frac = abs(set_frac)
 
     # convert the fractional days to a time
@@ -71,6 +71,9 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     print 'Set time: ' + set_time.isoformat()
 
     return transit_time, rise_time, set_time
+
+def greenwich_sidereal_to_local_time():
+    pass
 
 
 def main():

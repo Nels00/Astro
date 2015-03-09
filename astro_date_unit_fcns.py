@@ -17,7 +17,7 @@ def julian_day(dt_input=default_dt):
     # Breakout the datetime object
     Y, M, D = datebreakout(dt_input)
     # add the time part of the date to the day integer
-    D = add_day_frac(dt_input)
+    D = add_frac_day(dt_input)
     
     # assume that the transition to the gegorian calendar happend in Oct 1582
     # really it happened at different times depending on the country, e.g. in 1752 in the UK
@@ -152,13 +152,22 @@ def dayfrac2time(dt_input, day_frac):
         dt_output = dt_output + datetime.timedelta(minutes=1)
     return dt_output
 
-def add_day_frac(dt_input):
-    # Take an int, assumed to be a day, and add a time to it as a day frac
-    # (has to be a better way to do this)
-    Y, M, D = datebreakout(dt_input)
-    day_only = datetime.datetime(Y, M, D)
+def date2dayfrac(dt_input):
+    # Take a datetime object and convert the time part to a fractional day
+    day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
     tdelta = dt_input - day_only
     day_frac = tdelta.total_seconds() / (24 * 3600)
+    return day_frac
+
+def time2deg(dt_input):
+    # Take a datetime object and convert the time part to degrees
+    day_frac = date2dayfrac(dt_input)
+    return 360 * day_frac
+
+def add_frac_day(dt_input):
+    # Take an datetime object, and add the time to the Day as a fractional day
+    Y, M, D = datebreakout(dt_input)
+    day_frac = date2dayfrac(dt_input)
     return D + day_frac
 
 def showoff():
