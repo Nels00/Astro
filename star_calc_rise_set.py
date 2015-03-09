@@ -40,10 +40,10 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
         print 'Error: this could be a circumpolar star'
     h0 = np.arccos(cos_h0)/conv_rad
 
-    # transit
-    transit_deg = rt_asc + longitude - sidereal_time
-    rise_deg = transit_deg - h0
-    set_deg = transit_deg + h0
+    # transit, rise & set in degrees - make sure they a between 0 & 360
+    transit_deg = (rt_asc + longitude - sidereal_time) / 360 % 1 * 360
+    rise_deg = (transit_deg - h0) / 360 % 1 * 360
+    set_deg = (transit_deg + h0) / 360 % 1 * 360
     if transit_deg > 360 or rise_deg > 360 or set_deg > 360:
         print 'Error: something is happening outside of this day'
 
@@ -52,20 +52,28 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     rise_time = decdeg2time(rise_deg)
     set_time = decdeg2time(set_deg)
 
-    # print out some results
-    print 'Here are the results in GT Sidereal Time:'
-    print 'Transit time: ' + transit_time.isoformat()
-    print 'Rise time: ' + rise_time.isoformat()
-    print 'Set time: ' + set_time.isoformat()
-
     return transit_deg, rise_deg, set_deg
 
-def greenwich_sidereal_to_local_time():
-    pass
+def display_arctarus_example():
+    # display some example results
+
+    # first pull in the default results, these are in degrees in Greenwich timezone
+    transit, rise, setting = star_rise_set()
+    # convert them to local time
+    transit_local = decdeg2time(sidereal_time_local(transit))
+    rise_local = decdeg2time(sidereal_time_local(rise))
+    set_local = decdeg2time(sidereal_time_local(setting))
+
+    # print out some results
+    # why doesn't the local transit time equal the right ascension??
+    print 'Here are the results in Local Sidereal Time, these are wrong :('
+    print 'Transit time: ' + transit_local.isoformat()
+    print 'Rise time: ' + rise_local.isoformat()
+    print 'Set time: ' + set_local.isoformat()
 
 
 def main():
-    star_rise_set()
+    pass
 
 if __name__ == '__main__':
     main()
