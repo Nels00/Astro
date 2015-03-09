@@ -52,7 +52,7 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     return transit_deg, rise_deg, set_deg
 
 def display_arctarus_example():
-    # display some example results, this is not checking out:
+    # display some example results
     # the right ascension of the transit time does match now
     # you can verify by inputing the "transit_time" into this webpage:
     # http://www.csgnetwork.com/siderealjuliantimecalc.html
