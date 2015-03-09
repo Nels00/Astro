@@ -81,6 +81,10 @@ def calendar_date(JD=default_JD):
     return dt_output
 
 def sidereal_time_greenwich(dt_input=default_dt):
+    """
+    SIDEREAL_TIME (In Degrees) = sidereal_time_greenwich(DATETIME Object)
+    Give a datetime object and the sidereal time in Greenwich is given (in degrees)
+    """
     # Input a datetime object and the sidereal time is returned
     # Calcs from Chapter 12 Astronomy Alogrithms
 
