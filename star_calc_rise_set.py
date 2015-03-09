@@ -7,7 +7,6 @@ from astro_date_unit_fcns import *
 
 # some defaults
 default_dt = datetime.datetime(1988, 3, 20, 0, 0)
-default_JD = 2436116.30625
 sf_lat = 38.3047
 sf_longitude = 122.2989
 rt_asc_arctarus = 213.9167
