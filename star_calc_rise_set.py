@@ -23,7 +23,8 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     """
     # an input needed for the math below
     h0_star = -0.5667
-    # calculate sidereal time in greenwich
+    # calculate sidereal time in greenwich at 0 UT
+    day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
     sidereal_time = sidereal_time_greenwich(dt_input)
     # convert inputs into radians
     conv_rad = np.pi/180
@@ -36,41 +37,29 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
 
     # do the math
     cos_h0 = (np.sin(h0_star_rad)-(np.sin(lat_rad)*np.sin(dec_rad))) / (np.cos(lat_rad)*np.cos(dec_rad))
+    if cos_h0 < -1 or cos_h0 > 1:
+        print 'Error: this could be a circumpolar star'
     h0 = np.arccos(cos_h0)/conv_rad
 
     # transit
     transit_deg = rt_asc + longitude - sidereal_time
-    # convert degrees to a "day fraction"
-    transit = transit_deg/360 % 1
+    rise_deg = transit_deg - h0
+    set_deg = transit_deg + h0
+    if transit_deg > 360 or rise_deg > 360 or set_deg > 360:
+        print 'Error: something is happening outside of this day'
 
-    # rise
-    rise = transit - h0/360
-    # only get the fractional part of the day
-    rise = rise % 1
-    if rise < 0:
-        print "error: i think the rise time is going to happen the day before.."
-        rise = abs(rise)
-
-    # set time
-    set_frac = transit + h0/360
-    # fractional day part of set_frac
-    set_frac = set_frac % 1
-    if set_frac < 0:
-        print "error: i think the set time is going to happen the day before.."
-        set_frac = abs(set_frac)
-
-    # convert the fractional days to a time
     # this time is the sidereal time at Greenwich
-    transit_time = dayfrac2time(dt_input, transit)
-    rise_time = dayfrac2time(dt_input, rise)
-    set_time = dayfrac2time(dt_input, set_frac)
+    transit_time = decdeg2time(transit_deg)
+    rise_time = decdeg2time(rise_deg)
+    set_time = decdeg2time(set_deg)
 
     # print out some results
+    print 'Here are the results in GT Sidereal Time:'
     print 'Transit time: ' + transit_time.isoformat()
     print 'Rise time: ' + rise_time.isoformat()
     print 'Set time: ' + set_time.isoformat()
 
-    return transit_time, rise_time, set_time
+    return transit_deg, rise_deg, set_deg
 
 def greenwich_sidereal_to_local_time():
     pass

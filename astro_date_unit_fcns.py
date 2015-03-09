@@ -159,7 +159,7 @@ def date2dayfrac(dt_input):
     day_frac = tdelta.total_seconds() / (24 * 3600)
     return day_frac
 
-def time2deg(dt_input):
+def time2decdeg(dt_input):
     # Take a datetime object and convert the time part to degrees
     day_frac = date2dayfrac(dt_input)
     return 360 * day_frac
