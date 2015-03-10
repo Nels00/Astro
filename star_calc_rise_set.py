@@ -19,6 +19,7 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     All inputes, except the datetime object, are assumed to be in degrees
 
     The outputs are in UT time! Not sidereal time.
+    The outpus are a datetime object.
 
     These calculations were taken from Chapter 15 of Astronomy Algorithms
     """
@@ -28,28 +29,38 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
     day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
     sidereal_time = sidereal_time_greenwich(day_only)
     # convert inputs into radians
-    conv_rad = np.pi/180
-    h0_star_rad = h0_star * conv_rad
-    lat_rad = lat * conv_rad
-    longitude_rad = longitude * conv_rad
-    rt_asc_rad = rt_asc * conv_rad
-    dec_rad = dec * conv_rad
-    sidereal_time_rad = sidereal_time * conv_rad
+    h0_star_rad = np.radians(h0_star)
+    lat_rad = np.radians(lat)
+    longitude_rad = np.radians(longitude)
+    rt_asc_rad = np.radians(rt_asc)
+    dec_rad = np.radians(dec)
+    sidereal_time_rad = np.radians(sidereal_time)
 
     # do the math
     cos_h0 = (np.sin(h0_star_rad)-(np.sin(lat_rad)*np.sin(dec_rad))) / (np.cos(lat_rad)*np.cos(dec_rad))
     if cos_h0 < -1 or cos_h0 > 1:
         print 'Error: this could be a circumpolar star'
-    h0 = np.arccos(cos_h0)/conv_rad
+    h0 = np.degrees(np.arccos(cos_h0))
 
     # transit, rise & set in degrees - make sure they a between 0 & 360
-    transit_deg = (rt_asc + longitude - sidereal_time) / 360 % 1 * 360
-    rise_deg = (transit_deg - h0) / 360 % 1 * 360
-    set_deg = (transit_deg + h0) / 360 % 1 * 360
-    if transit_deg > 360 or rise_deg > 360 or set_deg > 360:
-        print 'Error: something is happening outside of this day'
+    transit_deg = (rt_asc + longitude - sidereal_time)
+    rise_deg = (transit_deg - h0)
+    set_deg = (transit_deg + h0)
+    if transit_deg>360 or rise_deg>360 or set_deg>360 or transit_deg<0 or rise_deg<0 or set_deg<0:
+        print 'Error: something is happening outside of this particular day'
+        transit_deg = transit_deg % 360
+        rise_deg = rise_deg % 360
+        set_deg = set_deg % 360
 
-    return transit_deg, rise_deg, set_deg
+    # change the degrees into datetime objects
+    transit_dt = datetime.datetime.combine(dt_input.date(), decdeg2time(transit_deg).time())
+    rise_dt = datetime.datetime.combine(dt_input.date(), decdeg2time(rise_deg).time())
+    set_dt = datetime.datetime.combine(dt_input.date(), decdeg2time(set_deg).time())
+    return transit_dt, rise_dt, set_dt
+
+def timezone_change(dt_input):
+    # this only converts UT time to PDT for right now
+    return dt_input + datetime.timedelta(hours=-7)
 
 def display_arctarus_example():
     # display some example results
@@ -60,16 +71,12 @@ def display_arctarus_example():
 
     # first pull in the default results, these are in degrees in Greenwich timezone
     transit, rise, setting = star_rise_set(datetime.datetime.utcnow())
-    # convert them to local time
-    transit_time = decdeg2time(transit)
-    rise_time = decdeg2time(rise)
-    set_time = decdeg2time(setting)
 
     # need to convert the UT time to local time
     # should use the pytz package for this instead
-    transit_local = transit_time + datetime.timedelta(hours=-7)
-    rise_local = rise_time + datetime.timedelta(hours=-7)
-    set_local = set_time + datetime.timedelta(hours=-7)
+    transit_local = timezone_change(transit)
+    rise_local = timezone_change(rise)
+    set_local = timezone_change(setting)
 
     # print out some results
     print 'Here are the results for Arctarus in SF local time today:'
