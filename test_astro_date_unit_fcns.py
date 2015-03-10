@@ -22,17 +22,14 @@ class TestAstroDateUnitFcns(unittest.TestCase):
         dec_arctarus = 19.1822
         transit, rise, setting = star_rise_set(default_dt, rt_asc_arctarus, dec_arctarus, sf_lat, sf_longitude)
         # transit compare
-        dt_transit = decdeg2time(transit)
-        dt_compare = datetime.datetime(1900,1,1,10,33,54)
-        self.assertEquals(dt_transit, dt_compare)
+        dt_compare = datetime.datetime(1988,3,20,10,33,54)
+        self.assertEquals(transit, dt_compare)
         # rise compare
-        dt_rise = decdeg2time(rise)
-        dt_compare = datetime.datetime(1900,1,1,3,26,55)
-        self.assertEquals(dt_rise, dt_compare)
+        dt_compare = datetime.datetime(1988,3,20,3,26,55)
+        self.assertEquals(rise, dt_compare)
         # set compare
-        dt_set = decdeg2time(setting)
-        dt_compare = datetime.datetime(1900,1,1,17,40,53)
-        self.assertEquals(dt_set, dt_compare)
+        dt_compare = datetime.datetime(1988,3,20,17,40,53)
+        self.assertEquals(setting, dt_compare)
 
 
 
