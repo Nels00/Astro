@@ -3,6 +3,8 @@
 # Calculates the rise and set times of a star and the star's position given the right ascension & declination
 import datetime
 import numpy as np
+import BeautifulSoup as bs
+import requests
 from astro_date_unit_fcns import *
 
 # some defaults
@@ -61,6 +63,15 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus,
 def timezone_change(dt_input):
     # this only converts UT time to PDT for right now
     return dt_input + datetime.timedelta(hours=-7)
+
+def lookup_star_coordinates(star_name='Arcturus'):
+    # just some scratch work that might turn into something
+    url = "http://en.wikipedia.org/wiki/" + star_name
+    response = requests.get(url)
+    soup = bs.BeautifulSoup(response.text)
+    txt = soup.find(id="coordinates").text
+    rs_hrs = float(txt[12:14])
+    print rs_hrs
 
 def display_arctarus_example():
     # display some example results
