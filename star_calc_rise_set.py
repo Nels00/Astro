@@ -9,10 +9,10 @@ from astro_date_unit_fcns import *
 default_dt = datetime.datetime(1988, 3, 20, 0, 0)
 sf_lat = 38.3047
 sf_longitude = 122.2989
-rt_asc_arctarus = 213.9167
-dec_arctarus = 19.1822
+rt_asc_arturus = 213.9167
+dec_arturus = 19.1822
 
-def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arctarus, dec=dec_arctarus, lat=sf_lat, longitude=sf_longitude):
+def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, lat=sf_lat, longitude=sf_longitude):
     """
     RISE, TRANSIT, SET = star_rise_set(DATETIME Object, RIGHT ASCENSION, DECLINATION, LATITUDE, LONGITUDE)
     For a specific star return the rise, transit and set times
@@ -62,7 +62,7 @@ def timezone_change(dt_input):
     # this only converts UT time to PDT for right now
     return dt_input + datetime.timedelta(hours=-7)
 
-def display_arctarus_example():
+def display_arturus_example():
     # display some example results
     # the right ascension of the transit time does match now
     # you can verify by inputing the "transit_time" into this webpage:
@@ -79,13 +79,13 @@ def display_arctarus_example():
     set_local = timezone_change(setting)
 
     # print out some results
-    print 'Here are the results for Arctarus in SF local time today:'
+    print 'Here are the results for Arcturus in SF local time today:'
     print 'Rise time: ' + rise_local.time().isoformat()
     print 'Transit time: ' + transit_local.time().isoformat()    
     print 'Set time: ' + set_local.time().isoformat()
 
 def main():
-    display_arctarus_example()
+    display_arturus_example()
 
 if __name__ == '__main__':
     main()
