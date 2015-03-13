@@ -13,6 +13,7 @@ def lookup_star_coordinates(star_name='Arcturus'):
     response = requests.get(url)
     soup = bs.BeautifulSoup(response.text)
     txt = soup.find(id="coordinates").text
+    # this may work too: soup.find(title='Right ascension').next.next.next
     breakout_text(txt)
 
 def breakout_text(txt):

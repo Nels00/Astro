@@ -4,3 +4,6 @@
 
 # example:
 # pytz
+import BeautifulSoup as bs
+import requests
+import re
