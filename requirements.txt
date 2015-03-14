@@ -7,3 +7,4 @@
 import BeautifulSoup as bs
 import requests
 import re
+from __future__ import division
