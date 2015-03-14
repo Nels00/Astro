@@ -18,30 +18,57 @@ def lookup_star_coordinates(star_name='Arcturus'):
 
 def breakout_text(txt):
     # example output: "Coordinates:18h36m56.3364s, +38 47 01.291"
-    # perform the crazy regex, this does NOT work if there are no decimals..
-    p = re.compile(r'Coordinates:(?P<hr>\d+)h(?P<mn>\d+)m(?P<sec>\d+).(?P<secdec>\d+)s,\s(?P<sgn>\S)(?P<deg>\d+)\D+(?P<degmn>\d+)\D+(?P<degsec>\d+)\D+(?P<degsecdec>\d+)')
-    m = p.search(txt)
-    # this function needs to be written
-    rtstr = float(m.group('sec') + '.' + m.group('secdec'))
-    rt_asc = hms2decdeg(float(m.group('hr')), float(m.group('mn')), rtstr)
-    # this function also needs to be written
-    sng = 1
-    if m.group('sgn') == '-':
-        sgn = -1
-    decstr = float(m.group('degsec') + '.' + m.group('degsecdec'))
-    dec = dms2decdeg(float(m.group('deg')), float(m.group('degmn')), decstr)
+    # first found out if there are 1, 2 or 3 periods
+    # right now we assume that the periods only occur in the seconds place but in some cases, e.g. Ursa_Major, the period occurs at the hour & degree level
+    idx = txt.find('.')
+    if idx == -1:
+        # no periods
+        p = re.compile(r'Coordinates:(?P<hr>\d+)h(?P<mn>\d+)m(?P<sec>\d+)s,\s(?P<sgn>\S)(?P<deg>\d+)\D+(?P<degmn>\d+)\D+(?P<degsec>\d+)')
+    elif txt[idx+1:].find('.') == -1:
+        # only one period but it could be in the Right Asc or the Declination
+        # if there's an 's' after the period then it's in the Right Asc, otherwise it's the Declination
+        if txt[idx+1:].find('s') > 0:
+            # the period is in the right ascension
+            p = re.compile(r'Coordinates:(?P<hr>\d+)h(?P<mn>\d+)m(?P<sec>\d+).(?P<secdec>\d+)s,\s(?P<sgn>\S)(?P<deg>\d+)\D+(?P<degmn>\d+)\D+(?P<degsec>\d+)')
+        else:
+            # period must be in the declination
+            p = re.compile(r'Coordinates:(?P<hr>\d+)h(?P<mn>\d+)m(?P<sec>\d+)s,\s(?P<sgn>\S)(?P<deg>\d+)\D+(?P<degmn>\d+)\D+(?P<degsec>\d+).(?P<degsecdec>\d+)')
+    else:
+        # two periods is the only other option
+        p = re.compile(r'Coordinates:(?P<hr>\d+)h(?P<mn>\d+)m(?P<sec>\d+).(?P<secdec>\d+)s,\s(?P<sgn>\S)(?P<deg>\d+)\D+(?P<degmn>\d+)\D+(?P<degsec>\d+).(?P<degsecdec>\d+)')
 
-    # print out the interesting stuff
+    # do the crazy regex matching on 'txt'
+    m = p.search(txt)
+    # make sure to handle the decimals correctly
+    if 'secdec' in m.groupdict():
+        rtstr = float(m.group('sec') + '.' + m.group('secdec'))
+    else:
+        rtstr = float(m.group('sec'))
+    if 'degsecdec' in m.groupdict():
+        decstr = float(m.group('degsec') + '.' + m.group('degsecdec'))
+    else:
+        decstr = float(m.group('degsec'))
+
+    # breakout the right ascension    
+    rt_asc = hms2decdeg(float(m.group('hr')), float(m.group('mn')), rtstr)
+    # breakout the declination, handling the signs appropriately
+    sgn = 1
+    if m.group('sgn') == '-':
+        sgn = -1    
+    dec = dms2decdeg(sgn * float(m.group('deg')), float(m.group('degmn')), decstr)
+
+    # print out the original text
     print txt
-    print 'Right Ascension: '+m.group('hr')+'h'+m.group('mn')+'m'+m.group('sec')+'.'+m.group('secdec')+'s'
-    print 'Declination: '+m.group('deg')+'D '+m.group('degmn')+"' "+m.group('degsec')+'.'+m.group('degsecdec')+'"'
 
 def hms2decdeg(x,y,z):
     # just a fake function for now
+    print 'Output: %fhrs %fmn %fsec' %(x, y, z)
+    day_frac = x / 24 + 
     return x
 
 def dms2decdeg(x,y,z):
     # just a fake function for now
+    print 'Output: %fdeg %fmn %fsec' %(x, y, z)
     return x
 
 def main():

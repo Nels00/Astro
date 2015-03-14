@@ -108,12 +108,14 @@ def sidereal_time_local(sid_gt, lat=sf_lat, longitude=sf_longitude):
     lst = lst % 360
     return lst
 
-def datebreakout(dt_input):
-    # Give a datetime object and return the Year, Month & Day
-    Y = dt_input.year
-    M = dt_input.month
-    D = dt_input.day
-    return Y, M, D
+def hms2decdeg(hrs, mnt, sec):
+    pass
+
+def dms2decdeg(deg, mnt, sec):
+    pass
+
+def decdeg2hms():
+    pass
 
 def decdeg2dms(decdeg):
     # Convert decimal degrees into degrees minutes seconds
@@ -134,6 +136,25 @@ def decdeg2time(decdeg):
     t = datetime.datetime(1900,1,1, hrs, mnt, int(sec))
     return t
 
+def time2decdeg(dt_input):
+    # Take a datetime object and convert the time part to degrees
+    day_frac = date2dayfrac(dt_input)
+    return 360 * day_frac
+
+def datebreakout(dt_input):
+    # Give a datetime object and return the Year, Month & Day
+    Y = dt_input.year
+    M = dt_input.month
+    D = dt_input.day
+    return Y, M, D
+
+def date2dayfrac(dt_input):
+    # Take a datetime object and convert the time part to a fractional day
+    day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
+    tdelta = dt_input - day_only
+    day_frac = tdelta.total_seconds() / (24 * 3600)
+    return day_frac
+
 def dayfrac2time(dt_input, day_frac):
     # Take a datetime.date and fractional day & the fractional day to the datetime object
     frac = day_frac - int(day_frac)
@@ -151,18 +172,6 @@ def dayfrac2time(dt_input, day_frac):
     if inc_mnt:
         dt_output = dt_output + datetime.timedelta(minutes=1)
     return dt_output
-
-def date2dayfrac(dt_input):
-    # Take a datetime object and convert the time part to a fractional day
-    day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
-    tdelta = dt_input - day_only
-    day_frac = tdelta.total_seconds() / (24 * 3600)
-    return day_frac
-
-def time2decdeg(dt_input):
-    # Take a datetime object and convert the time part to degrees
-    day_frac = date2dayfrac(dt_input)
-    return 360 * day_frac
 
 def add_day_frac(dt_input):
     # Take an datetime object, and add the time to the Day as a fractional day
