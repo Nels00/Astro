@@ -20,6 +20,7 @@ def breakout_text(txt):
     # example output: "Coordinates:18h36m56.3364s, +38 47 01.291"
     # first found out if there are 1, 2 or 3 periods
     # right now we assume that the periods only occur in the seconds place but in some cases, e.g. Ursa_Major, the period occurs at the hour & degree level
+    # also sometimes the declination is not signed and this will cause problems
     idx = txt.find('.')
     if idx == -1:
         # no periods
@@ -59,21 +60,12 @@ def breakout_text(txt):
 
     # print out the original text
     print txt
-
-def hms2decdeg(x,y,z):
-    # just a fake function for now
-    print 'Output: %fhrs %fmn %fsec' %(x, y, z)
-    day_frac = x / 24 + 
-    return x
-
-def dms2decdeg(x,y,z):
-    # just a fake function for now
-    print 'Output: %fdeg %fmn %fsec' %(x, y, z)
-    return x
+    print 'Right Ascension: %f' %rt_asc
+    print 'Declination: %f' %dec
 
 def main():
-    # for some reason this doesn't work with Arcturus
-    lookup_star_coordinates('Vega')
+    # show off some default functionality
+    lookup_star_coordinates()
 
 if __name__ == '__main__':
     main()

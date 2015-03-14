@@ -2,6 +2,7 @@
 
 # Several functions that allow for the calculation of Julian Day and Sidereal Time
 # Assumes that longitude West is positive
+from __future__ import division # have to do this so integers divide correctly
 import datetime
 
 # some defaults
@@ -109,12 +110,18 @@ def sidereal_time_local(sid_gt, lat=sf_lat, longitude=sf_longitude):
     return lst
 
 def hms2decdeg(hrs, mnt, sec):
-    pass
+    # convert hours, minutes, seconds into decimal degrees
+    print 'Output: %fhrs %fmn %fsec' %(hrs, mnt, sec)
+    day_frac = hrs / 24 + mnt / (24*60) + sec / (24*60*60)
+    decdeg = day_frac * 360
+    return decdeg
 
 def dms2decdeg(deg, mnt, sec):
-    pass
+    print 'Output: %fdeg %fmnt %fsec' %(deg, mnt, sec)
+    decdeg = deg + mnt / 60 + sec / (60*60)
+    return decdeg
 
-def decdeg2hms():
+def decdeg2hms(decdeg):
     pass
 
 def decdeg2dms(decdeg):
