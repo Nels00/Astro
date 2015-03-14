@@ -4,7 +4,6 @@
 
 # example:
 # pytz
-import BeautifulSoup as bs
-import requests
-import re
-from __future__ import division
+BeautifulSoup
+requests
+re
