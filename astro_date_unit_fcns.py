@@ -122,7 +122,8 @@ def dms2decdeg(deg, mnt, sec):
     return decdeg
 
 def decdeg2hms(decdeg):
-    pass
+    # this is the same thing as decdeg2time
+    return decdeg2time(decdeg)
 
 def decdeg2dms(decdeg):
     # Convert decimal degrees into degrees minutes seconds
