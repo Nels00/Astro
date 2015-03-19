@@ -19,7 +19,7 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
     All inputes, except the datetime object, are assumed to be in degrees
 
     The outputs are in UT time! Not sidereal time.
-    The outpus are a datetime object.
+    The outputs are datetime objects.
 
     These calculations were taken from Chapter 15 of Astronomy Algorithms
     """

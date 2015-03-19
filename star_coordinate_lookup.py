@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 # Create a function to look up coordinates for a star or constellation
+# This is not working amazingly well right now
 
 import BeautifulSoup as bs
 import requests
