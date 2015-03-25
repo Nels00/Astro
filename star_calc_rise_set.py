@@ -12,11 +12,12 @@ sf_longitude = 122.2989
 rt_asc_arturus = 213.9167
 dec_arturus = 19.1822
 
-def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, lat=sf_lat, longitude=sf_longitude):
+def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, lat=sf_lat, longitude=sf_longitude, starq=1):
     """
-    RISE, TRANSIT, SET = star_rise_set(DATETIME Object, RIGHT ASCENSION, DECLINATION, LATITUDE, LONGITUDE)
+    RISE, TRANSIT, SET = star_rise_set(DATETIME Object, RIGHT ASCENSION, DECLINATION, LATITUDE, LONGITUDE, STARQ)
     For a specific star return the rise, transit and set times
     All inputes, except the datetime object, are assumed to be in degrees
+    If STARQ == 0, then the calculations will be done for the Sun
 
     The outputs are in UT time! Not sidereal time.
     The outputs are datetime objects.
@@ -25,11 +26,16 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
     """
     # an input needed for the math below
     h0_star = -0.5667
+    if starq == 1:
+        h0 = h0_star
+    elif starq == 0:
+        h0 = h0_sun
+    
     # calculate sidereal time in greenwich at 0 UT
     day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
     sidereal_time = sidereal_time_greenwich(day_only)
     # convert inputs into radians
-    h0_star_rad = np.radians(h0_star)
+    h0_rad = np.radians(h0)
     lat_rad = np.radians(lat)
     longitude_rad = np.radians(longitude)
     rt_asc_rad = np.radians(rt_asc)
@@ -37,15 +43,15 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
     sidereal_time_rad = np.radians(sidereal_time)
 
     # do the math
-    cos_h0 = (np.sin(h0_star_rad)-(np.sin(lat_rad)*np.sin(dec_rad))) / (np.cos(lat_rad)*np.cos(dec_rad))
-    if cos_h0 < -1 or cos_h0 > 1:
+    cos_H0 = (np.sin(h0_rad)-(np.sin(lat_rad)*np.sin(dec_rad))) / (np.cos(lat_rad)*np.cos(dec_rad))
+    if cos_H0 < -1 or cos_H0 > 1:
         print 'Error: this could be a circumpolar star'
-    h0 = np.degrees(np.arccos(cos_h0))
+    H0 = np.degrees(np.arccos(cos_H0))
 
     # transit, rise & set in degrees - make sure they a between 0 & 360
     transit_deg = (rt_asc + longitude - sidereal_time)
-    rise_deg = (transit_deg - h0)
-    set_deg = (transit_deg + h0)
+    rise_deg = (transit_deg - H0)
+    set_deg = (transit_deg + H0)
     if transit_deg>360 or rise_deg>360 or set_deg>360 or transit_deg<0 or rise_deg<0 or set_deg<0:
         print 'Error: something is happening outside of this particular day'
         transit_deg = transit_deg % 360
