@@ -30,6 +30,8 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
         h0 = h0_star
     elif starq == 0:
         h0 = h0_sun
+    else:
+        print "Error: input not recognized"
     
     # calculate sidereal time in greenwich at 0 UT
     day_only = datetime.datetime.combine(dt_input.date(), datetime.time(0))
