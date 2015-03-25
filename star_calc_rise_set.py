@@ -26,6 +26,7 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
     """
     # an input needed for the math below
     h0_star = -0.5667
+    h0_sun = -0.8333
     if starq == 1:
         h0 = h0_star
     elif starq == 0:
