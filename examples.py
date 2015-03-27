@@ -35,11 +35,6 @@ def star_detail(dt_vec):
         out[idx,0] = timezone_change(transit)
         out[idx,1] = timezone_change(rise)
         out[idx,2] = timezone_change(setting)
-
-    # for right now i'm just leaving this code in here to show how to pull out the hours
-    
-    out_hour = hour_ify(out)
-
     return out
 
 def sun_detail(dt_vec):
