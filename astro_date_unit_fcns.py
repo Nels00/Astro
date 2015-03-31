@@ -137,8 +137,15 @@ def decdeg2time(decdeg):
     hrs,mnt = divmod(mnt, 60)
     # they come out as floats so i need to convert them to type integer
     # for now i have to round seconds until i figure out a better way
-    t = datetime.datetime(1900,1,1, int(hrs), int(mnt), int(round(sec)))
-    return t
+    sec = round(sec)
+    inc_mnt = False
+    if sec == 60:
+        sec = 0
+        inc_mnt = True
+    dt_output = datetime.datetime(1900,1,1, int(hrs), int(mnt), int(sec))
+    if inc_mnt:
+        dt_output = dt_output + datetime.timedelta(minutes=1)
+    return dt_output
 
 def time2decdeg(dt_input):
     # Take a datetime object and convert the time part to degrees
