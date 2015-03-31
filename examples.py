@@ -22,7 +22,16 @@ def year_date_window():
     month_vec = np.arange(dt_input.month-6, dt_input.month+6) % 12 +1
     dt_vec = []
     for x in month_vec:
-        dt_vec.append(dt_input.replace(month=x))
+        # a hacky way to handle the months ending on different days:
+        dt_iter = dt_input
+        while True:
+            try:
+                dt_iter = dt_iter.replace(month=x)
+                dt_vec.append(dt_iter)
+                break
+            except:
+                dt_iter = dt_iter.replace(day=dt_iter.day-1)
+
     return dt_vec
 
 def star_detail(dt_vec):
