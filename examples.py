@@ -68,6 +68,7 @@ def showoff():
     hour_ify = np.vectorize(lambda x: x.hour)
     star_hour = hour_ify(star_out)
     sun_hour = hour_ify(sun_out)
+    return star_out, sun_out
 
 def main():
     pass

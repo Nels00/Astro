@@ -55,16 +55,40 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
     transit_deg = (rt_asc + longitude - sidereal_time)
     rise_deg = (transit_deg - H0)
     set_deg = (transit_deg + H0)
-    if transit_deg>360 or rise_deg>360 or set_deg>360 or transit_deg<0 or rise_deg<0 or set_deg<0:
-        print 'Error: something is happening outside of this particular day'
+    # let's see if the transit or set times are actually happening the next day
+    transit_day = 0
+    rise_day = 0
+    set_day = 0
+    # transit check
+    if transit_deg>360:
+        transit_day = 1
         transit_deg = transit_deg % 360
+    elif transit_deg<0:
+        transit_day = -1
+        transit_deg = transit_deg % 360
+    # rise check
+    if rise_deg>360:
+        rise_day = 1
         rise_deg = rise_deg % 360
+    elif rise_deg<0:
+        rise_day = -1
+        rise_deg = rise_deg % 360
+    # set check
+    if set_deg>360:
+        set_day = 1
+        set_deg = set_deg % 360
+    elif set_deg<0:
+        set_day = -1
         set_deg = set_deg % 360
 
     # change the degrees into datetime objects
     transit_dt = datetime.datetime.combine(dt_input.date(), decdeg2time(transit_deg).time())
     rise_dt = datetime.datetime.combine(dt_input.date(), decdeg2time(rise_deg).time())
     set_dt = datetime.datetime.combine(dt_input.date(), decdeg2time(set_deg).time())
+    # add a day if we need to
+    transit_dt = transit_dt + datetime.timedelta(days=transit_day)
+    rise_dt = rise_dt + datetime.timedelta(days=rise_day)
+    set_dt = set_dt + datetime.timedelta(days=set_day)
     return transit_dt, rise_dt, set_dt
 
 def timezone_change(dt_input):
