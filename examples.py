@@ -18,7 +18,7 @@ def year_date_window():
     Returns a 12 datetime objects in a vector
     Each datetime object is separated by one month
     """
-    dt_input = datetime.datetime.utcnow()
+    dt_input = datetime.datetime.combine(datetime.date.today(), datetime.time())
     month_vec = np.arange(dt_input.month-6, dt_input.month+6) % 12 +1
     dt_vec = []
     for x in month_vec:
@@ -70,7 +70,7 @@ def showoff():
     sun_hour = hour_ify(sun_out)
 
 def main():
-    showoff()
+    pass
 
 if __name__ == '__main__':
     main()
