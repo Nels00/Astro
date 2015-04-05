@@ -111,13 +111,11 @@ def sidereal_time_local(sid_gt, lat=sf_lat, longitude=sf_longitude):
 
 def hms2decdeg(hrs, mnt, sec):
     # convert hours, minutes, seconds into decimal degrees
-    print 'Output: %fhrs %fmn %fsec' %(hrs, mnt, sec)
     day_frac = hrs / 24 + mnt / (24*60) + sec / (24*60*60)
     decdeg = day_frac * 360
     return decdeg
 
 def dms2decdeg(deg, mnt, sec):
-    print 'Output: %fdeg %fmnt %fsec' %(deg, mnt, sec)
     decdeg = deg + mnt / 60 + sec / (60*60)
     return decdeg
 
