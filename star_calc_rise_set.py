@@ -92,8 +92,15 @@ def star_rise_set(dt_input=default_dt, rt_asc=rt_asc_arturus, dec=dec_arturus, l
     return transit_dt, rise_dt, set_dt
 
 def timezone_change(dt_input):
-    # this only converts UT time to PDT for right now
-    return dt_input + datetime.timedelta(hours=-7)
+    # this only converts UT time to PDT/PST for right now
+    # *** HACK *** these dates only work for 2015, need to find the right sunday for other years
+    # does not take into account the fact the dst begins/ends at 2am
+    daylight_beg = datetime.datetime(dt_input.year, 3, 8, 0)
+    daylight_end = datetime.datetime(dt_input.year, 11, 1, 0)
+    hrs = -8
+    if dt_input >= daylight_beg and dt_input < daylight_end:
+        hrs = -7
+    return dt_input + datetime.timedelta(hours=hrs)
 
 def display_arturus_example():
     # display some example results
