@@ -13,12 +13,28 @@ from star_calc_rise_set import *
 from sun_position import *
 
 # calculate a date vector 
+def all_days_of_year():
+    """
+    Returns all the days of the year in a datetime object
+    """
+    # find first day of the year
+    tdy = datetime.date.today()
+    first_dt = datetime.date(tdy.year, 1, 1)
+    dt_input = datetime.datetime.combine(first_dt, datetime.time(0))
+    dt_vec = []
+    for x in np.arange(365):
+        dt_vec.append(dt_input + datetime.timedelta(days=x))
+
+    return dt_vec
+
+
 def year_date_window():
     """
     Returns a 12 datetime objects in a vector
     Each datetime object is separated by one month
     """
-    dt_input = datetime.datetime.combine(datetime.date.today(), datetime.time())
+    # create a datetime object with today's date and zero hours
+    dt_input = datetime.datetime.combine(datetime.date.today(), datetime.time(0))
     month_vec = np.arange(dt_input.month-6, dt_input.month+6) % 12 +1
     dt_vec = []
     for x in month_vec:
@@ -69,6 +85,13 @@ def showoff():
     star_hour = hour_ify(star_out)
     sun_hour = hour_ify(sun_out)
     return star_out, sun_out
+
+def sun_over_one_year():
+    dt_vec = all_days_of_year()
+    out = sun_detail(dt_vec)
+    time_ify = np.vectorize(lambda x: x.time())
+    time_of_sunrise = time_ify(out[:,1])
+    return time_of_sunrise
 
 def main():
     pass
