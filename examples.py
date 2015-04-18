@@ -75,7 +75,7 @@ def sun_detail(dt_vec):
         out[idx,2] = timezone_change(setting)
     return out
 
-def showoff():
+def show_12_days_of_year():
     dt_vec = year_date_window()
     star_out = star_detail(dt_vec)
     sun_out = sun_detail(dt_vec)
@@ -86,12 +86,23 @@ def showoff():
     sun_hour = hour_ify(sun_out)
     return star_out, sun_out
 
-def sun_over_one_year():
+def show_one_year():
     dt_vec = all_days_of_year()
-    out = sun_detail(dt_vec)
-    time_ify = np.vectorize(lambda x: x.time())
-    time_of_sunrise = time_ify(out[:,1])
-    return time_of_sunrise
+    star_out = star_detail(dt_vec)
+    sun_out = sun_detail(dt_vec)
+
+    # grab the day frac in hours from the rise time
+    time_ify = np.vectorize(lambda x: date2dayfrac(x)*24)
+    time_of_starrise = time_ify(star_out[:,1])
+    time_of_starset = time_ify(star_out[:,2])
+    time_of_sunrise = time_ify(sun_out[:,1])
+    time_of_sunset = time_ify(sun_out[:,2])
+    plt.interactive(1)
+    plt.plot(dt_vec, time_of_starrise)
+    plt.plot(dt_vec, time_of_starset)
+    plt.plot(dt_vec, time_of_sunrise)
+    plt.plot(dt_vec, time_of_sunset)
+    plt.legend(['Star Rise', 'Star Set', 'Sunrise', 'Sunset'])
 
 def main():
     pass
