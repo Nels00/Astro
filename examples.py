@@ -103,6 +103,17 @@ def show_one_year():
     plt.plot(dt_vec, time_of_sunrise)
     plt.plot(dt_vec, time_of_sunset)
     plt.legend(['Star Rise', 'Star Set', 'Sunrise', 'Sunset'])
+    plt.gca().invert_yaxis()
+
+    # how to find just the dates in october from this list
+    oct_month = np.vectorize(lambda x: x.month == 10)
+    tf = oct_month(dt_vec)
+    idx = np.where(tf)
+    dt_oct = map(lambda i: dt_vec[i], idx[0])
+    time_of_starrise_oct = map(lambda i: time_of_starrise[i], idx[0])
+    time_of_starset_oct = map(lambda i: time_of_starset[i], idx[0])
+    time_of_sunrise_oct = map(lambda i: time_of_sunrise[i], idx[0])
+    time_of_sunset_oct = map(lambda i: time_of_sunset[i], idx[0])
 
 def main():
     pass

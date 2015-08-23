@@ -110,18 +110,15 @@ def sidereal_time_local(sid_gt, lat=sf_lat, longitude=sf_longitude):
     return lst
 
 def hms2decdeg(hrs, mnt, sec):
-    # convert hours, minutes, seconds into decimal degrees
+    # convert *hours*, minutes, seconds into decimal degrees
     day_frac = hrs / 24 + mnt / (24*60) + sec / (24*60*60)
     decdeg = day_frac * 360
     return decdeg
 
 def dms2decdeg(deg, mnt, sec):
+    # convert *degrees*, minutes, seoconds into decimal degrees
     decdeg = deg + mnt / 60 + sec / (60*60)
     return decdeg
-
-def decdeg2hms(decdeg):
-    # this is the same thing as decdeg2time
-    return decdeg2time(decdeg)
 
 def decdeg2dms(decdeg):
     # Convert decimal degrees into degrees minutes seconds
@@ -145,6 +142,10 @@ def decdeg2time(decdeg):
         dt_output = dt_output + datetime.timedelta(minutes=1)
     return dt_output
 
+def decdeg2hms(decdeg):
+    # this is the same thing as decdeg2time - should be deprecated?
+    return decdeg2time(decdeg)
+
 def time2decdeg(dt_input):
     # Take a datetime object and convert the time part to degrees
     day_frac = date2dayfrac(dt_input)
@@ -165,7 +166,7 @@ def date2dayfrac(dt_input):
     return day_frac
 
 def dayfrac2time(dt_input, day_frac):
-    # Take a datetime.date and fractional day & the fractional day to the datetime object
+    # Take a datetime.date and fractional day & add the fractional day to the datetime object
     frac = day_frac - int(day_frac)
     mnt,sec = divmod(frac*24*3600, 60)
     hrs,mnt = divmod(mnt,60)
