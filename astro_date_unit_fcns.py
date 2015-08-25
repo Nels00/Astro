@@ -6,7 +6,7 @@ from __future__ import division # have to do this so integers divide correctly
 import datetime
 
 # some defaults
-default_dt = datetime.datetime(1957, 10, 4, 19, 21)
+default_dt = datetime.datetime(1985, 10, 7, 19, 21)
 default_JD = 2436116.30625
 sf_lat = 38.3047
 sf_longitude = 122.2989
@@ -191,11 +191,11 @@ def add_day_frac(dt_input):
 
 def showoff():
     # Run some calcs on 7 Oct 1985 7:21PM and print them to the screen
-    dt_ex = datetime.datetime(1987,10,7, 19, 21)
+    dt_ex = datetime.datetime(1985,10,7, 19, 21)
     JD = julian_day(dt_ex)
     sid_gt = sidereal_time_greenwich(dt_ex)
     sid_local = sidereal_time_local(sid_gt)
-    print 'The Julian Day of 1985 October 7 at 19:21 UTC is: %s' % JD
+    print 'The Julian Day of ' + dt_ex.date().isoformat() + ' at ' + dt_ex.time().isoformat() + ' UTC is: %s' % JD
     print 'You can verify at this URL: http://www.onlineconversion.com/julian_date.htm'
     print ''
     print 'Mean Sidereal Time in Greenwich at that time was: %s' % decdeg2time(sid_gt).time().isoformat()
