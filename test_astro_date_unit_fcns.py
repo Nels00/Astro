@@ -7,11 +7,13 @@ import datetime
 
 class TestAstroDateUnitFcns(unittest.TestCase):
     def test_julian_day_default(self):
-        self.assertEquals(2436116.30625, julian_day())
+        dt_example = datetime.datetime(1985, 10, 7, 19, 21)
+        self.assertEquals(2446346.30625, julian_day(dt_example))
 
     def test_calendar_day_default(self):
-        dt_answer = datetime.datetime(1957, 10, 4, 19, 21)
-        self.assertEquals(dt_answer, calendar_date())
+        dt_example = datetime.datetime(1985, 10, 7, 19, 21)
+        JD_example = 2446346.30625
+        self.assertEquals(dt_example, calendar_date(JD_example))
 
     def test_star_rise_set(self):
         # test the default transit, rise and set times
