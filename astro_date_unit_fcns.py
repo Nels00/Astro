@@ -75,13 +75,14 @@ def calendar_date(JD=default_JD):
     if month > 2:
         year = C - 4716
     else:
-        year = C - 4715
-    # create the datetime object from the Year, Month integers and a fractional Day
+        year = C - 4715    
+    # deal with BC years
     if year < 0:
         print 'year in BC! flipping year to a positive value'
         year = year * -1
     elif year == 0:
         print 'year zero?! seriously? Setting the year to "1"'
+    # create the datetime object from the Year, Month integers and a fractional Day
     dt_day = datetime.datetime(year, month, int(day))
     dt_output = dayfrac2time(dt_day.date(), day)
     return dt_output
