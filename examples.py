@@ -133,7 +133,7 @@ def write_to_CSV(dt_vec, star, sun):
     output_data['Sunset'] = sun[:,2]
 
     # write the file out to CSV
-    output_data.to_csv(filename)
+    output_data.to_csv(filename, index=False)
 
 def identify_month():
     """
@@ -150,7 +150,7 @@ def identify_month():
     time_of_sunset_oct = map(lambda i: time_of_sunset[i], idx[0])
 
 def main():
-    dt_vec, star, sun = calc_12_days_of_year()
+    dt_vec, star, sun = calc_one_year()
     plot_star_sun(dt_vec, star, sun)
 
 if __name__ == '__main__':
