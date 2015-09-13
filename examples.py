@@ -8,6 +8,7 @@ from __future__ import division # have to do this so integers divide correctly
 import datetime
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 from astro_date_unit_fcns import *
 from star_calc_rise_set import *
 from sun_position import *
@@ -75,36 +76,69 @@ def sun_detail(dt_vec):
         out[idx,2] = timezone_change(setting)
     return out
 
-def show_12_days_of_year():
+def calc_12_days_of_year():
+    """
+    Use the year_date_window function to find the details for a star and the sun
+    """
     dt_vec = year_date_window()
     star_out = star_detail(dt_vec)
     sun_out = sun_detail(dt_vec)
 
     # grab the hours from the date vectors
-    hour_ify = np.vectorize(lambda x: x.hour)
-    star_hour = hour_ify(star_out)
-    sun_hour = hour_ify(sun_out)
-    return star_out, sun_out
+    time_ify = np.vectorize(lambda x: date2dayfrac(x)*24)
+    star_dayfrac = time_ify(star_out)
+    sun_dayfrac = time_ify(sun_out)
+    return dt_vec, star_dayfrac, sun_dayfrac
 
-def show_one_year():
+def calc_one_year():
+    """
+    Use the all_days_of_year function to find the details for a star and the sun
+    """
     dt_vec = all_days_of_year()
     star_out = star_detail(dt_vec)
     sun_out = sun_detail(dt_vec)
 
     # grab the day frac in hours from the rise time
     time_ify = np.vectorize(lambda x: date2dayfrac(x)*24)
-    time_of_starrise = time_ify(star_out[:,1])
-    time_of_starset = time_ify(star_out[:,2])
-    time_of_sunrise = time_ify(sun_out[:,1])
-    time_of_sunset = time_ify(sun_out[:,2])
+    star_dayfrac = time_ify(star_out)
+    sun_dayfrac = time_ify(sun_out)
+    return dt_vec, star_dayfrac, sun_dayfrac
+
+def plot_star_sun(dt_vec, star, sun):
+    """
+    take date, sun and star data and plot the information
+    """
+    # plot the data
     plt.interactive(1)
-    plt.plot(dt_vec, time_of_starrise)
-    plt.plot(dt_vec, time_of_starset)
-    plt.plot(dt_vec, time_of_sunrise)
-    plt.plot(dt_vec, time_of_sunset)
+    plt.plot(dt_vec, star[:,1])
+    plt.plot(dt_vec, star[:,2])
+    plt.plot(dt_vec, sun[:,1])
+    plt.plot(dt_vec, sun[:,2])
     plt.legend(['Star Rise', 'Star Set', 'Sunrise', 'Sunset'])
     plt.gca().invert_yaxis()
 
+def write_to_CSV(dt_vec, star, sun):
+    """
+    Write data to a CSV
+    """
+    filename = 'testing.csv'
+
+    # create pandas dataframe
+    cols = ['date', 'Star Rise', 'Star Set', 'Sunrise', 'Sunset']
+    output_data = pd.DataFrame(columns=cols)
+    output_data['date'] = dt_vec
+    output_data['Star Rise'] = star[:,1]
+    output_data['Star Set'] = star[:,2]
+    output_data['Sunrise'] = sun[:,1]
+    output_data['Sunset'] = sun[:,2]
+
+    # write the file out to CSV
+    output_data.to_csv(filename)
+
+def identify_month():
+    """
+    this code will be useful somewhere else... it uses vectorization to find where dt_vec equal a specific month
+    """
     # how to find just the dates in october from this list
     oct_month = np.vectorize(lambda x: x.month == 10)
     tf = oct_month(dt_vec)
@@ -116,7 +150,8 @@ def show_one_year():
     time_of_sunset_oct = map(lambda i: time_of_sunset[i], idx[0])
 
 def main():
-    pass
+    dt_vec, star, sun = calc_12_days_of_year()
+    plot_star_sun(dt_vec, star, sun)
 
 if __name__ == '__main__':
     main()
